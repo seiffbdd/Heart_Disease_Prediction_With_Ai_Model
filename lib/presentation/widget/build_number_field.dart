@@ -16,6 +16,7 @@ class BuildNumberField extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.all(12.0),
       child: TextFormField(
+        controller: controller,
         keyboardType: TextInputType.numberWithOptions(decimal: true),
         style: TextStyle(fontSize: 16, color: Colors.black87),
         textInputAction: TextInputAction.next,

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:heart_disease_prediction/data/api_helper.dart';
 import 'package:heart_disease_prediction/data/model/requset_model.dart';
@@ -15,19 +17,19 @@ class HeartDiseaseInputScreen extends StatefulWidget {
 class _HeartDiseaseInputScreenState extends State<HeartDiseaseInputScreen> {
   late GlobalKey<FormState> _formKey;
   Map<String, dynamic>? prediction;
-  late final TextEditingController _age;
-  late final TextEditingController _sex;
-  late final TextEditingController _cp;
-  late final TextEditingController _trestbps;
-  late final TextEditingController _chol;
-  late final TextEditingController _fbs;
-  late final TextEditingController _restecg;
-  late final TextEditingController _thalach;
-  late final TextEditingController _exang;
-  late final TextEditingController _oldPeak;
-  late final TextEditingController _slope;
-  late final TextEditingController _ca;
-  late final TextEditingController _thal;
+  late TextEditingController _age;
+  late TextEditingController _sex;
+  late TextEditingController _cp;
+  late TextEditingController _trestbps;
+  late TextEditingController _chol;
+  late TextEditingController _fbs;
+  late TextEditingController _restecg;
+  late TextEditingController _thalach;
+  late TextEditingController _exang;
+  late TextEditingController _oldPeak;
+  late TextEditingController _slope;
+  late TextEditingController _ca;
+  late TextEditingController _thal;
   @override
   void initState() {
     _formKey = GlobalKey<FormState>();
@@ -151,7 +153,56 @@ class _HeartDiseaseInputScreenState extends State<HeartDiseaseInputScreen> {
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: _onSubmit,
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      final requestModel = RequestModel(
+                        age: double.tryParse(_age.text),
+                        sex: double.tryParse(_sex.text),
+                        cp: double.tryParse(_cp.text),
+                        trestbps: double.tryParse(_trestbps.text),
+                        chol: double.tryParse(_chol.text),
+                        fbs: double.tryParse(_fbs.text),
+                        restecg: double.tryParse(_restecg.text),
+                        thalach: double.tryParse(_thal.text),
+                        exang: int.tryParse(_exang.text),
+                        oldpeak: double.tryParse(_oldPeak.text),
+                        slope: int.tryParse(_slope.text),
+                        ca: double.tryParse(_ca.text),
+                        thal: double.tryParse(_thal.text),
+                      );
+
+                      try {
+                        // print(requestModel.s);
+                        prediction = await ApiHelper.predict(
+                          requestModel.toJson(),
+                        );
+
+                        showDialog(
+                          // ignore: use_build_context_synchronously
+                          context: context,
+                          builder: (context) {
+                            if (prediction != null) {
+                              return AlertDialog(
+                                title: Text(
+                                  'Prediction: ${prediction!['prediction']}',
+                                  style: TextStyle(fontSize: 40),
+                                ),
+                                content: Text(
+                                  'Result: ${prediction!['result']}',
+                                  style: TextStyle(fontSize: 24),
+                                ),
+                              );
+                            } else {
+                              return SnackBar(content: Text('Error'));
+                            }
+                          },
+                        );
+                        log('Prediction result: $prediction');
+                      } catch (e) {
+                        log('Error: $e');
+                      }
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
@@ -173,51 +224,7 @@ class _HeartDiseaseInputScreenState extends State<HeartDiseaseInputScreen> {
     );
   }
 
-  _onSubmit() async {
-    if (_formKey.currentState!.validate()) {
-      final requestModel = RequestModel(
-        age: double.tryParse(_age.text),
-        sex: double.tryParse(_age.text),
-        cp: double.tryParse(_age.text),
-        trestbps: double.tryParse(_age.text),
-        chol: double.tryParse(_age.text),
-        fbs: double.tryParse(_age.text),
-        restecg: double.tryParse(_age.text),
-        thalach: double.tryParse(_age.text),
-        exang: int.tryParse(_age.text),
-        oldpeak: double.tryParse(_age.text),
-        slope: int.tryParse(_age.text),
-        ca: double.tryParse(_age.text),
-        thal: double.tryParse(_age.text),
-      );
-      try {
-        prediction = await ApiHelper.predict(requestModel.toJson());
-        showDialog(
-          // ignore: use_build_context_synchronously
-          context: context,
-          builder: (context) {
-            if (prediction != null) {
-              return AlertDialog(
-                title: Text(
-                  'Prediction: ${prediction!['prediction']}',
-                  style: TextStyle(fontSize: 40),
-                ),
-                content: Text(
-                  'Result: ${prediction!['result']}',
-                  style: TextStyle(fontSize: 24),
-                ),
-              );
-            } else {
-              return SnackBar(content: Text('Error'));
-            }
-          },
-        );
-        debugPrint('Prediction result: $prediction');
-      } catch (e) {
-        debugPrint('Error: $e');
-      }
-    }
-  }
+  _onSubmit() async {}
 
   bool isInt(String s) => int.tryParse(s) != null;
 }

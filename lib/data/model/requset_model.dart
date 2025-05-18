@@ -1,17 +1,19 @@
+import 'dart:developer';
+
 class RequestModel {
-  final double? age;
-  final double? sex;
-  final double? cp;
-  final double? trestbps;
-  final double? chol;
-  final double? fbs;
-  final double? restecg;
-  final double? thalach;
-  final int? exang;
-  final double? oldpeak;
-  final int? slope;
-  final double? ca;
-  final double? thal;
+  double? age;
+  double? sex;
+  double? cp;
+  double? trestbps;
+  double? chol;
+  double? fbs;
+  double? restecg;
+  double? thalach;
+  int? exang;
+  double? oldpeak;
+  int? slope;
+  double? ca;
+  double? thal;
 
   RequestModel({
     required this.age,
@@ -29,38 +31,22 @@ class RequestModel {
     required this.thal,
   });
 
-  factory RequestModel.fromJson(Map<String, dynamic> json) {
-    return RequestModel(
-      age: json['age'],
-      sex: json['sex'],
-      cp: json['cp'],
-      trestbps: json['trestbps'],
-      chol: json['chol'],
-      fbs: json['fbs'],
-      restecg: json['restecg'],
-      thalach: json['thalach'],
-      exang: json['exang'],
-      oldpeak: json['oldpeak'],
-      slope: json['slope'],
-      ca: json['ca'],
-      thal: json['thal'],
-    );
-  }
   Map<String, dynamic> toJson() {
-    return {
-      'age': age,
-      'sex': sex,
-      'cp': cp,
-      'trestbps': trestbps,
-      'chol': chol,
-      'fbs': fbs,
-      'restecg': restecg,
-      'thalach': thalach,
-      'exang': exang,
-      'oldpeak': oldpeak,
-      'slope': slope,
-      'ca': ca,
-      'thal': thal,
-    };
+    Map<String, dynamic> data = <String, dynamic>{};
+    data['age'] = age;
+    data['sex'] = sex;
+    data['cp'] = cp;
+    data['trestbps'] = trestbps;
+    data['chol'] = chol;
+    data['fbs'] = fbs;
+    data['restecg'] = restecg;
+    data['thalach'] = thalach;
+    data['exang'] = exang;
+    data['oldpeak'] = oldpeak;
+    data['slope'] = slope;
+    data['ca'] = ca;
+    data['thal'] = thal;
+    log(data.toString());
+    return data;
   }
 }
